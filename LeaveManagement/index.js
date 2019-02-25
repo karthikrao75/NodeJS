@@ -3,18 +3,17 @@ const services = require('./services')
 
 var applicationName = 'LeaveManagement'
 
-var welcomeMessage = 'Welcome to leave Manager'
-var question = 'Would you like to plan a leave?'
+var welcomeMessage = 'Welcome to leave Manager. You can plan leaves or know up coming leave plans here'
+var question = 'would you like to plan you leaves or know up coming leave plans?'
 var helpMessage = 'Plan your leave here'
-
-services.welcomeMessage();
 
 const LaunchRequestHandler = {
   canHandle (handlerInput) {
     return handlerInput.requestEnvelope.request.type === 'LaunchRequest'
   },
   handle (handlerInput) {
-    const speechText = welcomeMessage + question
+    const speechText = welcomeMessage;
+   // speechText = services.welcomeMessage();
 
     return handlerInput.responseBuilder
       .speak(speechText)
@@ -65,6 +64,37 @@ const SessionEndedRequestHandler = {
   }
 }
 
+const getUserLeavePlansHandler = {
+  canHandle (handlerInput) {
+    return handlerInput.requestEnvelope.request.type === 'IntentRequest' &&
+      handlerInput.requestEnvelope.request.intent.name === 'getUserleavePlans'
+  },
+  handle (handlerInput) {
+    const speechText ='Leave plans for ' +handlerInput.requestEnvelope.request.intent.slots.user.value;
+
+    return handlerInput.responseBuilder
+      .speak(speechText)
+      .reprompt(question)
+      .withSimpleCard(applicationName, speechText)
+      .getResponse()
+  }
+}
+
+const NoIntentHandler = {
+  canHandle (handlerInput) {
+    return handlerInput.requestEnvelope.request.type === 'IntentRequest' &&
+      handlerInput.requestEnvelope.request.intent.name === 'AMAZON.NoIntent'
+  },
+  handle (handlerInput) {
+    const speechText = question;
+
+    return handlerInput.responseBuilder
+      .speak(speechText)
+      .reprompt(speechText)
+      .getResponse()
+  }
+}
+
 const ErrorHandler = {
   canHandle () {
     return true
@@ -86,5 +116,7 @@ exports.handler = skillBuilder
     LaunchRequestHandler,
     HelpIntentHandler,
     CancelAndStopIntentHandler,
-    SessionEndedRequestHandler
+    SessionEndedRequestHandler,
+    NoIntentHandler,
+    getUserLeavePlansHandler
 	).addErrorHandlers(ErrorHandler).lambda()

@@ -2,7 +2,7 @@ const axios = require('axios')
 
 const getWelcomeMessage = async () => {
     try {
-      return await axios.get('http://ec2-3-95-147-224.compute-1.amazonaws.com:8080/hello');
+      return await axios.get('http://ip-172-31-95-29.ec2.internal:8080/hello');
     } catch (error) {
       console.error(error);
     }
