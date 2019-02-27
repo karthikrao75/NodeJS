@@ -80,6 +80,22 @@ const getUserLeavePlansHandler = {
   }
 }
 
+const addUserLeavePlansHandler = {
+  canHandle (handlerInput) {
+    return handlerInput.requestEnvelope.request.type === 'IntentRequest' &&
+      handlerInput.requestEnvelope.request.intent.name === 'addUserLeavePlans'
+  },
+  handle (handlerInput) {
+    const speechText ='Leave plans for ' +handlerInput.requestEnvelope.request.intent.slots.user.value+' added succesfully';
+
+    return handlerInput.responseBuilder
+      .speak(speechText)
+      .reprompt(question)
+      .withSimpleCard(applicationName, speechText)
+      .getResponse()
+  }
+}
+
 const NoIntentHandler = {
   canHandle (handlerInput) {
     return handlerInput.requestEnvelope.request.type === 'IntentRequest' &&
@@ -118,5 +134,6 @@ exports.handler = skillBuilder
     CancelAndStopIntentHandler,
     SessionEndedRequestHandler,
     NoIntentHandler,
-    getUserLeavePlansHandler
+    getUserLeavePlansHandler,
+    addUserLeavePlansHandler 
 	).addErrorHandlers(ErrorHandler).lambda()
