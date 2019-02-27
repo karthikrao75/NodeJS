@@ -7,6 +7,8 @@ var welcomeMessage = 'Welcome to leave Manager. You can plan leaves or know up c
 var question = 'would you like to plan you leaves or know up coming leave plans?'
 var helpMessage = 'Plan your leave here'
 
+services.leavePlan("karthik");
+
 const LaunchRequestHandler = {
   canHandle (handlerInput) {
     return handlerInput.requestEnvelope.request.type === 'LaunchRequest'
