@@ -73,12 +73,15 @@ const getUserLeavePlansHandler = {
     let user = handlerInput.requestEnvelope.request.intent.slots.user.value;
     let leaves = await services.leavePlan(user);
     console.log(" handlerInput "+leaves);
-    let speechText ='Leave plans are';
+    let speechText ='Up coming Leave plans for '+ user + ' are:';
     
     for(var i=0; i < leaves.length ; i++){
       let leave= leaves[i];
       console.log("leave record" +leave);
-      speechText = speechText+ " "+ leave.userName + " is on leave from "+leave.startDate+" to "+ leave.endDate;
+      if(i!==0){
+        speechText = speechText+ " and"
+      }
+      speechText = speechText+ " "+ leave.userName + " has planned leave for "+ leave.leaveReason +" starting from "+leave.startDate+" to "+ leave.endDate;
       
     }
 
