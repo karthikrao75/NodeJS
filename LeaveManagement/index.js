@@ -7,8 +7,6 @@ var welcomeMessage = 'Welcome to leave Manager. You can plan leaves or know up c
 var question = 'would you like to plan you leaves or know up coming leave plans?'
 var helpMessage = 'Plan your leave here'
 
-services.leavePlan("karthik");
-
 const LaunchRequestHandler = {
   canHandle (handlerInput) {
     return handlerInput.requestEnvelope.request.type === 'LaunchRequest'
@@ -71,8 +69,18 @@ const getUserLeavePlansHandler = {
     return handlerInput.requestEnvelope.request.type === 'IntentRequest' &&
       handlerInput.requestEnvelope.request.intent.name === 'getUserleavePlans'
   },
-  handle (handlerInput) {
-    const speechText ='Leave plans for ' +handlerInput.requestEnvelope.request.intent.slots.user.value;
+  async handle (handlerInput) {
+    let user = handlerInput.requestEnvelope.request.intent.slots.user.value;
+    let leaves = await services.leavePlan(user);
+    console.log(" handlerInput "+leaves);
+    let speechText ='Leave plans are';
+    
+    for(var i=0; i < leaves.length ; i++){
+      let leave= leaves[i];
+      console.log("leave record" +leave);
+      speechText = speechText+ " "+ leave.userName + " is on leave from "+leave.startDate+" to "+ leave.endDate;
+      
+    }
 
     return handlerInput.responseBuilder
       .speak(speechText)
