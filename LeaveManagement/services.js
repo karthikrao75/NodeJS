@@ -43,7 +43,7 @@ const get = async (url) => {
   }
 
   exports.addLeave = async (leave) =>{
-    const leave = await addLeavePlan(leave);
-    console.log(leave.data);
-    return leave.data;
+    const response = await addLeavePlan(leave);
+    console.log(response.data);
+    return response.data;
   }
