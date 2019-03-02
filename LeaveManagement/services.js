@@ -10,6 +10,14 @@ const get = async (url) => {
     }
   }
 
+  const addLeavePlan = async (leave) =>{
+    try {
+      return axios.post(baseUrl+'/leave',leave);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   exports.welcomeMessage = async () => {
     const message = await get(baseUrl+'/hello');
     console.log(message.data);
@@ -32,4 +40,10 @@ const get = async (url) => {
     const leaves = await get(baseUrl+'/leave/upcoming');
     console.log(leaves.data);
     return leaves.data;
+  }
+
+  exports.addLeave = async (leave) =>{
+    const leave = await addLeavePlan(leave);
+    console.log(leave.data);
+    return leave.data;
   }

@@ -114,6 +114,36 @@ const addUserLeavePlansHandler = {
       .getResponse()
   }
 }
+const getLeavePlansHandler = {
+  canHandle (handlerInput) {
+    return handlerInput.requestEnvelope.request.type === 'IntentRequest' &&
+      handlerInput.requestEnvelope.request.intent.name === 'getLeavePlans'
+  },
+  async handle (handlerInput) {
+    let speechText = '';
+    let leaves = await services.upcomingLeavePlans();
+    if(leaves.length===0){
+      speechText ='No up coming Leave plans available';
+    }else{
+      speechText ='Upcoming Leave plans are:';
+    }
+
+    for(var i=0; i < leaves.length ; i++){
+      let leave= leaves[i];
+      console.log("leave record" +leave);
+      if(i!==0){
+        speechText = speechText+ " and"
+      }
+      speechText = speechText+ " "+ leave.userName + " has planned leave for "+ leave.leaveReason +" starting from "+leave.startDate+" to "+ leave.endDate;
+      
+    }
+
+    return handlerInput.responseBuilder
+      .speak(speechText)
+      .reprompt(speechText)
+      .getResponse()
+  }
+}
 
 const NoIntentHandler = {
   canHandle (handlerInput) {
@@ -160,5 +190,6 @@ exports.handler = skillBuilder
     SessionEndedRequestHandler,
     NoIntentHandler,
     getUserLeavePlansHandler,
-    addUserLeavePlansHandler 
+    addUserLeavePlansHandler ,
+    getLeavePlansHandler
 	).addErrorHandlers(ErrorHandler).lambda()
