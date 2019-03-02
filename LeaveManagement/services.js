@@ -2,31 +2,34 @@ const axios = require('axios')
 
 const baseUrl = "http://localhost:8080";
 
-const getWelcomeMessage = async () => {
+const get = async (url) => {
     try {
-      return await axios.get(baseUrl+'/hello');
+      return await axios.get(url);
     } catch (error) {
       console.error(error);
     }
   }
-
-  const getLeavePlan = async (userName) => {
-    try {
-      return await axios.get(baseUrl+'/leave?userName='+userName);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
 
   exports.welcomeMessage = async () => {
-    const message = await getWelcomeMessage();
+    const message = await get(baseUrl+'/hello');
     console.log(message.data);
     return message.data;
   }
 
   exports.leavePlan = async (userName) => {
-    const leave = await getLeavePlan(userName);
-    console.log(leave.data);
-    return leave.data;
+    const leaves = await get(baseUrl+'/leave?userName='+userName);
+    console.log(leaves.data);
+    return leaves.data;
+  }
+
+  exports.users = async () => {
+    const users = await get(baseUrl+'/users');
+    console.log(users.data);
+    return users.data;
+  }
+
+  exports.upcomingLeavePlans = async () =>{
+    const leaves = await get(baseUrl+'/leave/upcoming');
+    console.log(leaves.data);
+    return leaves.data;
   }

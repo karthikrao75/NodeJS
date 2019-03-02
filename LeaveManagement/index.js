@@ -1,6 +1,8 @@
 const Alexa = require('ask-sdk-core')
 const services = require('./services')
 
+var users=null;
+
 var applicationName = 'LeaveManagement'
 
 var welcomeMessage = 'Welcome to leave Manager. You can plan leaves or know up coming leave plans here'
@@ -13,7 +15,6 @@ const LaunchRequestHandler = {
   },
   handle (handlerInput) {
     const speechText = welcomeMessage;
-   // speechText = services.welcomeMessage();
 
     return handlerInput.responseBuilder
       .speak(speechText)
@@ -70,10 +71,13 @@ const getUserLeavePlansHandler = {
       handlerInput.requestEnvelope.request.intent.name === 'getUserleavePlans'
   },
   async handle (handlerInput) {
+    let speechText ='';
     let user = handlerInput.requestEnvelope.request.intent.slots.user.value;
+    await loadUsers();
+    if(users.indexOf(user) > -1 ){
     let leaves = await services.leavePlan(user);
     console.log(" handlerInput "+leaves);
-    let speechText ='Up coming Leave plans for '+ user + ' are:';
+    speechText ='Up coming Leave plans for '+ user + ' are:';
     
     for(var i=0; i < leaves.length ; i++){
       let leave= leaves[i];
@@ -84,7 +88,9 @@ const getUserLeavePlansHandler = {
       speechText = speechText+ " "+ leave.userName + " has planned leave for "+ leave.leaveReason +" starting from "+leave.startDate+" to "+ leave.endDate;
       
     }
-
+  } else{
+    speechText ="Unable to find "+ user +". please use a valid user";
+  }
     return handlerInput.responseBuilder
       .speak(speechText)
       .reprompt(question)
@@ -135,6 +141,12 @@ const ErrorHandler = {
       .speak('Sorry, I can\'t understand the command. Please say again.')
       .reprompt('Sorry, I can\'t understand the command. Please say again.')
       .getResponse()
+  }
+}
+
+const loadUsers = async function(){
+  if(users === null){
+    users = await services.users();
   }
 }
 
